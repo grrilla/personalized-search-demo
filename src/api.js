@@ -7,6 +7,7 @@ export async function search({ query, page = 1, perPage = 24, persona = {} }) {
     siteId: SITE_ID,
     q: query,
     resultsFormat: 'native',
+    test: 'true',   // suppress analytics — demo tool only
     page,
     resultsPerPage: perPage,
     ...persona,

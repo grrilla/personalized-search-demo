@@ -1,6 +1,6 @@
 import { useState } from 'preact/hooks';
 
-export function ProductCard({ result }) {
+export function ProductCard({ result, isUnique }) {
   const { name, price, image, variants, url } = result;
 
   const swatches = variants?.data ?? [];
@@ -27,7 +27,7 @@ export function ProductCard({ result }) {
     : null;
 
   return (
-    <div class="product-card">
+    <div class={`product-card${isUnique ? ' product-card--unique' : ''}`}>
       <div class="product-card__image-wrap">
         <img
           src={activeImage}

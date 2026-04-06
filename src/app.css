@@ -320,6 +320,14 @@ body {
   background: #f2f6fc;
 }
 
+.product-card--unique {
+  box-shadow: inset 0 0 0 2px var(--teal);
+}
+
+.product-card--unique:hover {
+  box-shadow: inset 0 0 0 2px var(--teal);
+}
+
 .product-card__image-wrap {
   aspect-ratio: 1;
   overflow: hidden;

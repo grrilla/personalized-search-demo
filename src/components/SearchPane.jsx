@@ -3,7 +3,7 @@ import { search } from '../api';
 import { ProductCard } from './ProductCard';
 import { PersonaCard } from './PersonaCard';
 
-export function SearchPane({ persona, query }) {
+export function SearchPane({ persona, query, onResults, uniqueIds }) {
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -13,6 +13,7 @@ export function SearchPane({ persona, query }) {
     if (!query) {
       setResults([]);
       setTotal(null);
+      onResults?.([]);
       return;
     }
 
@@ -23,8 +24,10 @@ export function SearchPane({ persona, query }) {
     search({ query, persona: persona.params })
       .then((data) => {
         if (cancelled) return;
-        setResults(data.results ?? []);
+        const r = data.results ?? [];
+        setResults(r);
         setTotal(data.pagination?.totalResults ?? 0);
+        onResults?.(r);
       })
       .catch((err) => {
         if (cancelled) return;
@@ -65,9 +68,16 @@ export function SearchPane({ persona, query }) {
 
       {!loading && !error && (
         <div class="product-grid">
-          {results.map((r) => (
-            <ProductCard key={r.uid ?? r.id} result={r} />
-          ))}
+          {results.map((r) => {
+            const uid = r.uid ?? r.id;
+            return (
+              <ProductCard
+                key={uid}
+                result={r}
+                isUnique={uniqueIds?.has(uid)}
+              />
+            );
+          })}
         </div>
       )}
     </div>

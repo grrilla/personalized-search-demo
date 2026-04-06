@@ -26,9 +26,19 @@ const PERSONAS = [
   },
 ];
 
+function computeUnique(a, b) {
+  const aIds = new Set(a.map((r) => r.uid ?? r.id));
+  const bIds = new Set(b.map((r) => r.uid ?? r.id));
+  return [
+    new Set([...aIds].filter((id) => !bIds.has(id))),
+    new Set([...bIds].filter((id) => !aIds.has(id))),
+  ];
+}
+
 export function App() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
+  const [paneResults, setPaneResults] = useState([[], []]);
   const [suggestions, setSuggestions] = useState([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -62,6 +72,7 @@ export function App() {
   function commitSearch(term) {
     setQuery(term);
     setSubmittedQuery(term);
+    setPaneResults([[], []]);
     setShowSuggestions(false);
     setSuggestions([]);
   }
@@ -152,13 +163,22 @@ export function App() {
         )}
         {submittedQuery && (
           <div class="pane-layout">
-            {PERSONAS.map((persona) => (
-              <SearchPane
-                key={persona.id}
-                persona={persona}
-                query={submittedQuery}
-              />
-            ))}
+            {(() => {
+              const [uniqueA, uniqueB] = computeUnique(paneResults[0], paneResults[1]);
+              return PERSONAS.map((persona, i) => (
+                <SearchPane
+                  key={persona.id}
+                  persona={persona}
+                  query={submittedQuery}
+                  onResults={(r) => setPaneResults((prev) => {
+                    const next = [...prev];
+                    next[i] = r;
+                    return next;
+                  })}
+                  uniqueIds={i === 0 ? uniqueA : uniqueB}
+                />
+              ));
+            })()}
           </div>
         )}
       </main>
