@@ -26,6 +26,20 @@ const PERSONAS = [
   },
 ];
 
+const NAV_COLLECTIONS = [
+  { handle: 'new-arrivals',  label: 'New Arrivals' },
+  { handle: 'best-sellers', label: 'Best Sellers' },
+  { handle: 'his',          label: 'His' },
+  { handle: 'hers',         label: 'Hers' },
+  { handle: 'tops',         label: 'Tops' },
+  { handle: 'outerwear',    label: 'Outerwear' },
+  { handle: 'shoes-1',      label: 'Shoes' },
+  { handle: 'running',      label: 'Running' },
+  { handle: 'hiking',       label: 'Hiking' },
+  { handle: 'yoga',         label: 'Yoga' },
+  { handle: 'accessories',  label: 'Accessories' },
+];
+
 function computeDiffs(a, b) {
   const aPos = new Map(a.map((r, i) => [r.uid ?? r.id, i]));
   const bPos = new Map(b.map((r, i) => [r.uid ?? r.id, i]));
@@ -37,7 +51,15 @@ function computeDiffs(a, b) {
 export function App() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
+  const [activeCollection, setActiveCollection] = useState(null);
   const [paneResults, setPaneResults] = useState([[], []]);
+  const [suggestions, setSuggestions] = useState([]);
+  const [activeIndex, setActiveIndex] = useState(-1);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const debounceRef = useRef(null);
+  const containerRef = useRef(null);
+
+  const isActive = submittedQuery || activeCollection;
 
   // Warm personalization cache on load and every 60s
   useEffect(() => {
@@ -45,11 +67,6 @@ export function App() {
     const interval = setInterval(() => PERSONAS.forEach(preflight), 60_000);
     return () => clearInterval(interval);
   }, []);
-  const [suggestions, setSuggestions] = useState([]);
-  const [activeIndex, setActiveIndex] = useState(-1);
-  const [showSuggestions, setShowSuggestions] = useState(false);
-  const debounceRef = useRef(null);
-  const containerRef = useRef(null);
 
   useEffect(() => {
     clearTimeout(debounceRef.current);
@@ -78,6 +95,16 @@ export function App() {
   function commitSearch(term) {
     setQuery(term);
     setSubmittedQuery(term);
+    setActiveCollection(null);
+    setPaneResults([[], []]);
+    setShowSuggestions(false);
+    setSuggestions([]);
+  }
+
+  function commitCollection(handle) {
+    setActiveCollection(handle);
+    setSubmittedQuery('');
+    setQuery('');
     setPaneResults([[], []]);
     setShowSuggestions(false);
     setSuggestions([]);
@@ -101,6 +128,8 @@ export function App() {
       setShowSuggestions(false);
     }
   }
+
+  const activeCollectionLabel = NAV_COLLECTIONS.find((c) => c.handle === activeCollection)?.label;
 
   return (
     <div class="app">
@@ -144,10 +173,24 @@ export function App() {
             <button class="search-form__btn" type="submit">Search</button>
           </form>
         </div>
+        <nav class="collection-nav" aria-label="Browse collections">
+          <ul class="collection-nav__list">
+            {NAV_COLLECTIONS.map((col) => (
+              <li key={col.handle}>
+                <button
+                  class={`collection-nav__item ${activeCollection === col.handle ? 'collection-nav__item--active' : ''}`}
+                  onClick={() => commitCollection(col.handle)}
+                >
+                  {col.label}
+                </button>
+              </li>
+            ))}
+          </ul>
+        </nav>
       </header>
 
       <main class="app-body">
-        {!submittedQuery && (
+        {!isActive && (
           <div class="app-empty">
             <div class="persona-preview">
               {PERSONAS.map((p) => (
@@ -164,28 +207,34 @@ export function App() {
                 </div>
               ))}
             </div>
-            <p>Search above to see how results differ for each shopper.</p>
+            <p>Search or browse a collection above to compare results.</p>
           </div>
         )}
-        {submittedQuery && (
-          <div class="pane-layout">
-            {(() => {
-              const [uniqueA, uniqueB] = computeDiffs(paneResults[0], paneResults[1]);
-              return PERSONAS.map((persona, i) => (
-                <SearchPane
-                  key={persona.id}
-                  persona={persona}
-                  query={submittedQuery}
-                  onResults={(r) => setPaneResults((prev) => {
-                    const next = [...prev];
-                    next[i] = r;
-                    return next;
-                  })}
-                  uniqueIds={i === 0 ? uniqueA : uniqueB}
-                />
-              ));
-            })()}
-          </div>
+        {isActive && (
+          <>
+            {activeCollectionLabel && (
+              <h1 class="collection-heading">{activeCollectionLabel}</h1>
+            )}
+            <div class="pane-layout">
+              {(() => {
+                const [uniqueA, uniqueB] = computeDiffs(paneResults[0], paneResults[1]);
+                return PERSONAS.map((persona, i) => (
+                  <SearchPane
+                    key={persona.id}
+                    persona={persona}
+                    query={submittedQuery}
+                    collection={activeCollection}
+                    onResults={(r) => setPaneResults((prev) => {
+                      const next = [...prev];
+                      next[i] = r;
+                      return next;
+                    })}
+                    uniqueIds={i === 0 ? uniqueA : uniqueB}
+                  />
+                ));
+              })()}
+            </div>
+          </>
         )}
       </main>
     </div>

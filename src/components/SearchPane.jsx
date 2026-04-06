@@ -3,14 +3,14 @@ import { search } from '../api';
 import { ProductCard } from './ProductCard';
 import { PersonaCard } from './PersonaCard';
 
-export function SearchPane({ persona, query, onResults, uniqueIds }) {
+export function SearchPane({ persona, query, collection, onResults, uniqueIds }) {
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    if (!query) {
+    if (!query && !collection) {
       setResults([]);
       setTotal(null);
       onResults?.([]);
@@ -21,7 +21,7 @@ export function SearchPane({ persona, query, onResults, uniqueIds }) {
     setLoading(true);
     setError(null);
 
-    search({ query, persona: persona.params })
+    search({ query, collection, persona: persona.params })
       .then((data) => {
         if (cancelled) return;
         const r = data.results ?? [];
@@ -38,7 +38,7 @@ export function SearchPane({ persona, query, onResults, uniqueIds }) {
       });
 
     return () => { cancelled = true; };
-  }, [query, JSON.stringify(persona.params)]);
+  }, [query, collection, JSON.stringify(persona.params)]);
 
   return (
     <div class="search-pane">
@@ -62,7 +62,7 @@ export function SearchPane({ persona, query, onResults, uniqueIds }) {
         </div>
       )}
 
-      {!loading && !error && results.length === 0 && query && (
+      {!loading && !error && results.length === 0 && (query || collection) && (
         <div class="search-pane__state">No results found.</div>
       )}
 

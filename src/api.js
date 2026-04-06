@@ -3,16 +3,17 @@ const BASE_URL = `https://${SITE_ID}.a.athoscommerce.net/api/search/search.json`
 const SUGGEST_URL = `https://${SITE_ID}.a.athoscommerce.net/v1/suggest`;
 const PREFLIGHT_URL = `https://${SITE_ID}.a.athoscommerce.net/v1/preflight`;
 
-export async function search({ query, page = 1, perPage = 24, persona = {} }) {
+export async function search({ query, collection, page = 1, perPage = 24, persona = {} }) {
   const params = new URLSearchParams({
     siteId: SITE_ID,
-    q: query,
+    q: query ?? '',
     resultsFormat: 'native',
-    test: 'true',   // suppress analytics — demo tool only
+    test: 'true',
     page,
     resultsPerPage: perPage,
     ...persona,
   });
+  if (collection) params.set('bgfilter.collection_handle', collection);
 
   const res = await fetch(`${BASE_URL}?${params}`);
   if (!res.ok) throw new Error(`Search failed: ${res.status}`);

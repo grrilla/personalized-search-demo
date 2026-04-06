@@ -146,6 +146,55 @@ body {
   background: #4abf9f;
 }
 
+/* ── Collection nav ── */
+.collection-nav {
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.collection-nav__list {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 0 24px;
+  display: flex;
+  gap: 2px;
+  list-style: none;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.collection-nav__list::-webkit-scrollbar { display: none; }
+
+.collection-nav__item {
+  padding: 8px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.75);
+  background: none;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: color 0.15s, border-color 0.15s;
+  font-family: 'Inter', sans-serif;
+}
+
+.collection-nav__item:hover {
+  color: var(--white);
+}
+
+.collection-nav__item--active {
+  color: var(--teal);
+  border-bottom-color: var(--teal);
+}
+
+.collection-heading {
+  font-family: 'Noto Serif', serif;
+  font-size: 22px;
+  font-weight: 600;
+  color: var(--blue);
+  padding: 0 0 16px;
+}
+
 /* ── Body ── */
 .app-body {
   max-width: 1400px;
