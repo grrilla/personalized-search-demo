@@ -1,6 +1,6 @@
 import { useState, useCallback, useEffect, useRef } from 'preact/hooks';
 import { SearchPane } from './components/SearchPane';
-import { suggest } from './api';
+import { suggest, preflight } from './api';
 import './app.css';
 
 const PERSONAS = [
@@ -38,6 +38,13 @@ export function App() {
   const [query, setQuery] = useState('');
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [paneResults, setPaneResults] = useState([[], []]);
+
+  // Warm personalization cache on load and every 60s
+  useEffect(() => {
+    PERSONAS.forEach(preflight);
+    const interval = setInterval(() => PERSONAS.forEach(preflight), 60_000);
+    return () => clearInterval(interval);
+  }, []);
   const [suggestions, setSuggestions] = useState([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
