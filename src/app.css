@@ -42,10 +42,16 @@ body {
   display: flex;
   flex: 1;
   gap: 8px;
+  align-items: flex-start;
+}
+
+.search-form__input-wrap {
+  position: relative;
+  flex: 1;
 }
 
 .search-form__input {
-  flex: 1;
+  width: 100%;
   padding: 8px 14px;
   border: 1px solid #d0d0d0;
   border-radius: 6px;
@@ -56,6 +62,34 @@ body {
 
 .search-form__input:focus {
   border-color: #4f46e5;
+}
+
+/* ── Autocomplete suggestions ── */
+.suggestions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #d0d0d0;
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  list-style: none;
+  z-index: 200;
+  overflow: hidden;
+}
+
+.suggestions__item {
+  padding: 9px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  color: #1a1a1a;
+}
+
+.suggestions__item--active,
+.suggestions__item:hover {
+  background: #f0efff;
+  color: #4f46e5;
 }
 
 .search-form__btn {
