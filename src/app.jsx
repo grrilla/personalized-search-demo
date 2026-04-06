@@ -26,13 +26,12 @@ const PERSONAS = [
   },
 ];
 
-function computeUnique(a, b) {
-  const aIds = new Set(a.map((r) => r.uid ?? r.id));
-  const bIds = new Set(b.map((r) => r.uid ?? r.id));
-  return [
-    new Set([...aIds].filter((id) => !bIds.has(id))),
-    new Set([...bIds].filter((id) => !aIds.has(id))),
-  ];
+function computeDiffs(a, b) {
+  const aPos = new Map(a.map((r, i) => [r.uid ?? r.id, i]));
+  const bPos = new Map(b.map((r, i) => [r.uid ?? r.id, i]));
+  const diffA = new Set([...aPos.keys()].filter((id) => aPos.get(id) !== bPos.get(id)));
+  const diffB = new Set([...bPos.keys()].filter((id) => bPos.get(id) !== aPos.get(id)));
+  return [diffA, diffB];
 }
 
 export function App() {
@@ -164,7 +163,7 @@ export function App() {
         {submittedQuery && (
           <div class="pane-layout">
             {(() => {
-              const [uniqueA, uniqueB] = computeUnique(paneResults[0], paneResults[1]);
+              const [uniqueA, uniqueB] = computeDiffs(paneResults[0], paneResults[1]);
               return PERSONAS.map((persona, i) => (
                 <SearchPane
                   key={persona.id}
