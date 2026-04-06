@@ -3,10 +3,27 @@ import { SearchPane } from './components/SearchPane';
 import { suggest } from './api';
 import './app.css';
 
-// Persona configs — add shopper, cart, lastViewed etc. here when ready
 const PERSONAS = [
-  { id: 'a', label: 'Shopper A', params: {} },
-  { id: 'b', label: 'Shopper B', params: {} },
+  {
+    id: 'morgan',
+    label: 'Morgan',
+    tagline: 'Studio & Yoga Enthusiast',
+    bio: 'Starts every morning with a flow class and lives in her leggings. Shops for performance studio wear, yoga accessories, and elevated athleisure she can take from mat to coffee.',
+    params: {
+      shopper: 'MORGAN-STUDIO-001',
+      lastViewed: 'VW1982-AYM-LA,VW1982-LLE-CH,VW1982-LSK-WH,VW1982-ACR-OL,VW1982-FLE-AS,VW1982-FDR-OL,VW1982-ULE-CH,VW1982-SLE-BL,VW1982-HCR-OL,VW1982-HLE-BL,VW1982-LTA-CH,VW1982-ESK-CH',
+    },
+  },
+  {
+    id: 'jordan',
+    label: 'Jordan',
+    tagline: 'Trail Runner & Outdoor Adventurer',
+    bio: 'Weekend trail runner and avid hiker. Needs gear that performs in the backcountry and looks sharp at the trailhead. Gravitates toward technical outerwear, running shoes, and versatile bottoms.',
+    params: {
+      shopper: 'JORDAN-OUTDOOR-001',
+      lastViewed: 'VW1982-RSO-WH,VW1982-MAN-BL,VW1982-UCP-SA,VW1982-VHI-SI,VW1982-RJO-AS,VW1982-SJO-SA,VW1982-MQZ-SA,VW1982-RQZ-CH,VW1982-MTE-OL,VW1982-LTP-SA,VW1982-MSO-SA,VW1982-STP-NA',
+    },
+  },
 ];
 
 export function App() {
@@ -18,7 +35,6 @@ export function App() {
   const debounceRef = useRef(null);
   const containerRef = useRef(null);
 
-  // Fetch suggestions with debounce
   useEffect(() => {
     clearTimeout(debounceRef.current);
     if (query.trim().length < 2) {
@@ -35,7 +51,6 @@ export function App() {
     return () => clearTimeout(debounceRef.current);
   }, [query]);
 
-  // Close dropdown on outside click
   useEffect(() => {
     function onClickOutside(e) {
       if (!containerRef.current?.contains(e.target)) setShowSuggestions(false);
@@ -117,7 +132,22 @@ export function App() {
       <main class="app-body">
         {!submittedQuery && (
           <div class="app-empty">
-            <p>Enter a search term above to compare results across personas.</p>
+            <div class="persona-preview">
+              {PERSONAS.map((p) => (
+                <div key={p.id} class="persona-preview__card">
+                  <img
+                    class="persona-preview__avatar"
+                    src={`https://api.dicebear.com/9.x/lorelei/svg?seed=${encodeURIComponent(p.label)}&backgroundColor=d0e0f3&radius=50`}
+                    alt={p.label}
+                    width="64"
+                    height="64"
+                  />
+                  <strong>{p.label}</strong>
+                  <span>{p.tagline}</span>
+                </div>
+              ))}
+            </div>
+            <p>Search above to see how results differ for each shopper.</p>
           </div>
         )}
         {submittedQuery && (
@@ -125,9 +155,8 @@ export function App() {
             {PERSONAS.map((persona) => (
               <SearchPane
                 key={persona.id}
-                label={persona.label}
+                persona={persona}
                 query={submittedQuery}
-                persona={persona.params}
               />
             ))}
           </div>

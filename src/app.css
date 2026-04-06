@@ -155,9 +155,38 @@ body {
 
 .app-empty {
   text-align: center;
-  padding: 80px 0;
+  padding: 60px 0 40px;
   color: var(--grey-600);
-  font-size: 16px;
+  font-size: 15px;
+}
+
+.persona-preview {
+  display: flex;
+  justify-content: center;
+  gap: 48px;
+  margin-bottom: 28px;
+}
+
+.persona-preview__card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+
+.persona-preview__avatar {
+  border-radius: 50%;
+  border: 3px solid var(--blue-light);
+}
+
+.persona-preview__card strong {
+  font-size: 15px;
+  color: var(--text);
+}
+
+.persona-preview__card span {
+  font-size: 13px;
+  color: var(--grey-600);
 }
 
 /* ── Pane layout ── */
@@ -183,25 +212,64 @@ body {
   box-shadow: 0 1px 4px rgba(13,30,59,0.06);
 }
 
-.search-pane__header {
-  padding: 12px 16px;
-  border-bottom: 2px solid var(--blue-light);
+.search-pane__result-header {
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--grey-200);
+  min-height: 32px;
   display: flex;
-  align-items: baseline;
-  gap: 10px;
-  background: #f2f6fc;
+  align-items: center;
 }
 
-.search-pane__label {
+.search-pane__count {
+  font-size: 12px;
+  color: var(--grey-600);
+}
+
+/* ── Persona card ── */
+.persona-card {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 16px;
+  background: #f2f6fc;
+  border-bottom: 2px solid var(--blue-light);
+}
+
+.persona-card__avatar {
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  border: 2px solid var(--blue-light);
+  flex-shrink: 0;
+  background: var(--blue-light);
+}
+
+.persona-card__info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.persona-card__name {
   font-family: 'Noto Serif', serif;
   font-size: 15px;
   font-weight: 600;
   color: var(--blue);
 }
 
-.search-pane__count {
+.persona-card__tagline {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--teal);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.persona-card__bio {
   font-size: 12px;
   color: var(--grey-600);
+  line-height: 1.5;
+  margin-top: 4px;
 }
 
 .search-pane__state {

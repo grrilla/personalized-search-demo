@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'preact/hooks';
 import { search } from '../api';
 import { ProductCard } from './ProductCard';
+import { PersonaCard } from './PersonaCard';
 
-export function SearchPane({ label, query, persona }) {
+export function SearchPane({ persona, query }) {
   const [results, setResults] = useState([]);
   const [total, setTotal] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -19,7 +20,7 @@ export function SearchPane({ label, query, persona }) {
     setLoading(true);
     setError(null);
 
-    search({ query, persona })
+    search({ query, persona: persona.params })
       .then((data) => {
         if (cancelled) return;
         setResults(data.results ?? []);
@@ -34,12 +35,13 @@ export function SearchPane({ label, query, persona }) {
       });
 
     return () => { cancelled = true; };
-  }, [query, JSON.stringify(persona)]);
+  }, [query, JSON.stringify(persona.params)]);
 
   return (
     <div class="search-pane">
-      <div class="search-pane__header">
-        <h2 class="search-pane__label">{label}</h2>
+      <PersonaCard persona={persona} />
+
+      <div class="search-pane__result-header">
         {total !== null && !loading && (
           <span class="search-pane__count">{total} results</span>
         )}
