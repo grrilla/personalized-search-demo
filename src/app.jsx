@@ -135,8 +135,12 @@ export function App() {
     <div class="app">
       <header class="app-header">
         <div class="app-header__inner">
-          <div class="app-header__logo">
-            <img src="https://athoscommerce.com/wp-content/uploads/2025/08/Athos-logo-scaled.png" alt="Athos Commerce" />
+          <div class="app-header__brand">
+            <img src="https://athoscommerce.com/wp-content/uploads/2025/08/Athos-logo-scaled.png" alt="Athos Commerce" class="app-header__logo" />
+            <div class="app-header__titles">
+              <span class="app-header__name">Athos Commerce</span>
+              <span class="app-header__subtitle">Personalized Search Demo</span>
+            </div>
           </div>
           <form class="search-form" onSubmit={handleSubmit} ref={containerRef}>
             <div class="search-form__input-wrap">
