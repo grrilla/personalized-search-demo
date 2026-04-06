@@ -74,7 +74,9 @@ export function App() {
     <div class="app">
       <header class="app-header">
         <div class="app-header__inner">
-          <span class="app-header__logo">Athos</span>
+          <div class="app-header__logo">
+            <img src="https://athoscommerce.com/wp-content/uploads/2025/08/Athos-logo-scaled.png" alt="Athos Commerce" />
+          </div>
           <form class="search-form" onSubmit={handleSubmit} ref={containerRef}>
             <div class="search-form__input-wrap">
               <input
