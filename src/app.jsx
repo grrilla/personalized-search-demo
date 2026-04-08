@@ -53,6 +53,8 @@ export function App() {
   const [submittedQuery, setSubmittedQuery] = useState('');
   const [activeCollection, setActiveCollection] = useState(null);
   const [paneResults, setPaneResults] = useState([[], []]);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
   const [suggestions, setSuggestions] = useState([]);
   const [activeIndex, setActiveIndex] = useState(-1);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -97,6 +99,8 @@ export function App() {
     setSubmittedQuery(term);
     setActiveCollection(null);
     setPaneResults([[], []]);
+    setPage(1);
+    setTotalPages(1);
     setShowSuggestions(false);
     setSuggestions([]);
   }
@@ -106,6 +110,8 @@ export function App() {
     setSubmittedQuery('');
     setQuery('');
     setPaneResults([[], []]);
+    setPage(1);
+    setTotalPages(1);
     setShowSuggestions(false);
     setSuggestions([]);
   }
@@ -228,16 +234,37 @@ export function App() {
                     persona={persona}
                     query={submittedQuery}
                     collection={activeCollection}
+                    page={page}
                     onResults={(r) => setPaneResults((prev) => {
                       const next = [...prev];
                       next[i] = r;
                       return next;
                     })}
+                    onPagination={i === 0 ? ({ totalPages: tp }) => setTotalPages(tp) : undefined}
                     uniqueIds={i === 0 ? uniqueA : uniqueB}
                   />
                 ));
               })()}
             </div>
+            {totalPages > 1 && (
+              <div class="pagination">
+                <button
+                  class="pagination__btn"
+                  onClick={() => setPage((p) => p - 1)}
+                  disabled={page === 1}
+                >
+                  ← Prev
+                </button>
+                <span class="pagination__info">Page {page} of {totalPages}</span>
+                <button
+                  class="pagination__btn"
+                  onClick={() => setPage((p) => p + 1)}
+                  disabled={page === totalPages}
+                >
+                  Next →
+                </button>
+              </div>
+            )}
           </>
         )}
       </main>
